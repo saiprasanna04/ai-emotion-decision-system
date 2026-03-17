@@ -1,64 +1,127 @@
-# AI Emotion Understanding & Decision System
+#  AI Emotion Understanding & Decision System
 
 ##  Problem Statement
-To build a system that understands human emotional state and guides actions under noisy and imperfect signals.
+Build a system that understands human emotional state from noisy, real-world inputs and guides users toward better actions.
+
+This system goes beyond prediction:
+**Understand → Decide → Guide**
+
+---
+
+##  System Flow
+
+1. User input (journal + metadata)
+2. Emotion prediction (ML model)
+3. Intensity prediction (regression)
+4. Decision engine (rule-based reasoning)
+5. Uncertainty estimation
+6. Final output (action + timing)
+
+---
 
 ##  Approach
-We use a hybrid system:
-- ML models → emotion + intensity
-- Rule-based logic → decision making
+
+ **hybrid system**:
+
+- ML models → predict emotional state & intensity  
+- Rule-based logic → decide *what to do* and *when*
+
+### Core Logic Examples:
+- High stress + high intensity → immediate intervention
+- High energy + calm → deep work
+- Low energy → rest
+
+---
 
 ##  Models Used
-- Logistic Regression (emotion classification)
-- Random Forest (intensity regression)
 
-##  Why Regression for Intensity?
-Intensity is treated as regression to capture subtle variations and then mapped to 1–5.
+- Logistic Regression → Emotion classification  
+- Random Forest → Intensity regression  
+
+### Why Regression for Intensity?
+Intensity is modeled as regression to capture subtle variations, then mapped to a 1–5 scale.
+
+---
 
 ##  Feature Importance
-- Text (TF-IDF) → primary signal
-- Metadata → resolves ambiguity
+
+- **Text (TF-IDF)** → primary emotional signal  
+- **Metadata (stress, energy, sleep)** → resolves ambiguity  
 
 Example:
-“I’m fine” + high stress → not actually fine
+> “I’m fine” + stress = 9 → likely not actually fine
+
+---
 
 ##  Ablation Study
-- Text-only model → weaker on ambiguous inputs
-- Text + metadata → improved robustness
+
+| Model | Description | Result |
+|------|------------|--------|
+| Text-only | Uses only journal text | Struggles with ambiguous inputs |
+| Text + Metadata | Adds stress, energy, etc. | More robust and accurate |
+
+ Metadata significantly improves performance in noisy and conflicting cases.
+
+---
 
 ##  Uncertainty Modeling
-combine:
-- Model confidence
-- Short text detection
-- Conflict detection
 
-## Uncertainty
-- Based on prediction probability
-- Flagged when confidence < 0.6
+We estimate uncertainty using:
 
-##  Decision Logic
+- Prediction confidence  
+- Short text detection (“ok”, “fine”)  
+- Conflict detection (text vs metadata mismatch)
+
+### Rule:
+- confidence < 0.6 → uncertain_flag = 1
+
+---
+
+##  Decision Engine
+
 Uses:
-- emotion
-- intensity
-- stress
-- energy
-- time of day
+- predicted emotion  
+- intensity  
+- stress level  
+- energy level  
+- time of day  
 
-## Decision Engine
-Uses predicted emotion, intensity, and context to:
-- Suggest actions
-- Recommend timing
+### Example Decisions:
+- High stress → breathing / grounding  
+- Low energy → rest  
+- Calm + high energy → deep work  
+
+---
 
 ##  Robustness
-- Short text → uncertain
-- Missing values → filled
-- Conflicts → detected
 
-## Features
-- Text (TF-IDF)
-- Metadata (sleep, stress, energy)
+Handles real-world issues:
 
-## How to Run
+- Short text → marked uncertain  
+- Missing values → filled with defaults  
+- Conflicting signals → resolved via rules  
+
+---
+
+##  Sample Output
+
+| Input | State | Intensity | Action | When |
+|------|------|----------|--------|------|
+| "I feel very tired" | sad | 4 | rest | now |
+| "Feeling motivated" | happy | 2 | deep_work | later_today |
+
+---
+
+##  Features Used
+
+- Text → TF-IDF  
+- Metadata → sleep, stress, energy, time_of_day  
+
+---
+
+##  How to Run
+
+```bash
 pip install -r requirements.txt
 python src/train.py
 python src/predict.py
