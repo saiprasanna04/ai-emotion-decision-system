@@ -53,12 +53,15 @@ Example:
 
 ---
 
-##  Ablation Study
+##  Ablation Study:
 
-| Model | Description | Result |
-|------|------------|--------|
-| Text-only | Uses only journal text | Struggles with ambiguous inputs |
-| Text + Metadata | Adds stress, energy, etc. | More robust and accurate |
+### Models Compared
+
+| Model | Features Used | Emotion Accuracy | Intensity MAE |
+|------|-------------|-----------------|---------------|
+| Text Only | TF-IDF (journal_text) | 68% | 1.0 |
+| Text + Metadata | TF-IDF + stress + energy + sleep | 75% | 0.75 |
+
 
  Metadata significantly improves performance in noisy and conflicting cases.
 
