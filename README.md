@@ -128,3 +128,10 @@ Handles real-world issues:
 pip install -r requirements.txt
 python src/train.py
 python src/predict.py
+
+##  UI Demo
+
+Run:
+streamlit run ui_app.py
+
+This launches a simple interactive interface to test the system.

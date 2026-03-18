@@ -1,43 +1,22 @@
-def decide_action(state, intensity, stress, energy, time_of_day):
-    
-    if stress > 7 and intensity >= 4:
-        action = "box_breathing"
-        
-    elif state == "sad" and energy < 4:
-        action = "rest"
-        
-    elif state == "calm" and energy > 6:
-        action = "deep_work"
-        
-    elif state == "anxious":
-        action = "grounding"
-        
-    elif energy < 3:
-        action = "movement"
-        
-    else:
-        action = "light_planning"
-    
-    
-    # WHEN TO DO
-    if intensity >= 4:
-        when = "now"
-        
-    elif stress > 6:
-        when = "within_15_min"
-        
-    elif energy > 6:
-        when = "later_today"
-        
-    elif time_of_day == "night":
-        when = "tonight"
-        
-    else:
-        when = "tomorrow_morning"
-    
-    
-    return action, when
+def decide_action(state, intensity, stress, energy, time_of_day, confidence=None):
 
+    # HANDLE UNCERTAINTY FIRST
+    if confidence is not None and confidence < 0.6:
+        return "pause_and_reflect", "now"
 
-def generate_message(state, action):
-    return f"You seem {state}. Try {action} to feel better."
+    # STRONG EMOTIONAL STATES
+    if state in ["sad", "anxious"] or intensity >= 4:
+        if stress > 5:
+            return "box_breathing", "now"
+        else:
+            return "grounding", "within_15_min"
+
+    # HIGH ENERGY POSITIVE STATES
+    if state in ["happy", "focused", "calm"] and energy > 6:
+        return "deep_work", "later_today"
+
+    # LOW ENERGY
+    if energy < 3:
+        return "rest", "now"
+
+    return "light_planning", "later_today"
